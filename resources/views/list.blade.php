@@ -55,9 +55,15 @@
                                 <td>{{ $product->id }}</td>
                                 <td>
                                     @if($product->img_path)
-                                        <img src="{{ asset('storage/' . $product->img_path) }}">
+                                        <img src="{{ asset('storage/' . $product->img_path) }}" 
+                                             alt="{{ $product->product_name }}" 
+                                             class="img-thumbnail" 
+                                             style="width: 80px; height: 80px; object-fit: cover;">
                                     @else
-                                        <span>画像なし</span>
+                                        <img src="{{ asset('storage/No Image.png') }}" 
+                                             alt="デフォルト画像" 
+                                             class="img-thumbnail" 
+                                             style="width: 80px; height: 80px; object-fit: cover;">
                                     @endif
                                 </td>
                                 <td>{{ $product->product_name }}</td>

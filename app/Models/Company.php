@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
     use HasFactory;
+
+    /**
+     * メーカー一覧を取得する 
+     */
+    public static function getAllCompanies()
+    {
+        return self::all();
+    }
 }

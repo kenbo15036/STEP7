@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Company;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -32,7 +33,7 @@ class ProductController extends Controller
         $products = $query->get();
         
         // メーカー一覧を取得（プルダウン用）
-        $companies = DB::table('companies')->get();
+        $companies = Company::getAllCompanies();
         
         return view('list', [
             'products' => $products, 
@@ -45,13 +46,34 @@ class ProductController extends Controller
     //商品の新規登録画面の表示
     public function registProduct(){
         // メーカー情報を取得
-        $companies = DB::table('companies')->get();
+        $companies = Company::getAllCompanies();
         
         return view('new', ['companies' => $companies]);
     }
 
     //商品の新規登録処理
     public function registSubmit(Request $request){
+        // バリデーションルール
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'company_id' => 'required|integer',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'comment' => 'nullable|string|max:1000',
+            'img_path' => 'nullable|file|max:2048'
+        ], [
+            'product_name.required' => '商品名は必須です。',
+            'company_id.required' => 'メーカーは必須です。',
+            'price.required' => '価格は必須です。',
+            'price.integer' => '価格は数値で入力してください。',
+            'price.min' => '価格は0以上で入力してください。',
+            'stock.required' => '在庫数は必須です。',
+            'stock.integer' => '在庫数は数値で入力してください。',
+            'stock.min' => '在庫数は0以上で入力してください。',
+            'img_path.file' => 'ファイルを選択してください。',
+            'img_path.max' => 'ファイルのサイズは2MB以下にしてください。'
+        ]);
+
         DB::beginTransaction();
 
         try{
@@ -64,7 +86,7 @@ class ProductController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', '登録に失敗しました。');
+                ->with('error', '登録に失敗しました。' . $e->getMessage());
         }
 
         return redirect(route('list'))
@@ -98,13 +120,34 @@ class ProductController extends Controller
         $product = $model->getProductDetail($id);
         
         // メーカー情報を取得
-        $companies = DB::table('companies')->get();
+        $companies = Company::getAllCompanies();
         
         return view('edit', ['product' => $product, 'companies' => $companies]);
     }
 
     //商品情報の更新処理
     public function updateProduct(Request $request, $id){
+        // バリデーションルール
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'company_id' => 'required|integer',
+            'price' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
+            'comment' => 'nullable|string|max:1000',
+            'img_path' => 'nullable|file|max:2048'
+        ], [
+            'product_name.required' => '商品名は必須です。',
+            'company_id.required' => 'メーカーは必須です。',
+            'price.required' => '価格は必須です。',
+            'price.integer' => '価格は数値で入力してください。',
+            'price.min' => '価格は0以上で入力してください。',
+            'stock.required' => '在庫数は必須です。',
+            'stock.integer' => '在庫数は数値で入力してください。',
+            'stock.min' => '在庫数は0以上で入力してください。',
+            'img_path.file' => 'ファイルを選択してください。',
+            'img_path.max' => 'ファイルのサイズは2MB以下にしてください。'
+        ]);
+
         DB::beginTransaction();
 
         try{
@@ -116,7 +159,7 @@ class ProductController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', '更新に失敗しました。');
+                ->with('error', '更新に失敗しました。' . $e->getMessage());
         }
 
         return redirect(route('list'))

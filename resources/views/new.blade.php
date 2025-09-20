@@ -14,7 +14,7 @@
                     </div>
                 @endif
                 
-                    <form action="{{ route('registSubmit') }}" method="post">
+                    <form action="{{ route('registSubmit') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row mb-3">
@@ -87,7 +87,8 @@
                     <div class="row mb-3">
                     <label for="img_path" class="col-md-3 col-form-label text-md-end">{{ __('商品画像') }}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="img_path" name="img_path" value="{{ old('img_path') }}" autofocus>
+                            <input type="file" class="form-control" id="img_path" name="img_path" accept="image/*">
+                            <div class="form-text">画像ファイルを選択してください</div>
                             @error('img_path')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

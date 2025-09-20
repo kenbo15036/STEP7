@@ -18,9 +18,9 @@
                         <label for="product_name" class="col-md-3 col-form-label text-md-end">{{ __('商品画像') }}</label>
                             <div class="col-md-6 d-flex align-items-center">
                                 <a>@if($productdetail->img_path)
-                                            <img src="{{ asset('storage/' . $productdetail->img_path) }}">
+                                            <img src="{{ asset('storage/' . $productdetail->img_path) }}" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: contain;">
                                         @else
-                                            画像なし
+                                            <img src="{{ asset('storage/No Image.png') }}" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: contain;" alt="デフォルト画像">
                                         @endif
                                 </a>
                             </div>

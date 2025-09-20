@@ -14,13 +14,13 @@
                     </div>
                 @endif
                 
-                    <form action="{{ route('update', ['id' => $product->id]) }}" method="post">
+                    <form action="{{ route('update', ['id' => $product->id]) }}" method="post" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row mb-3">
                     <label for="product_name" class="col-md-3 col-form-label text-md-end">{{ __('商品名') }}<span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="product_name" name="product_name" value="{{ old('product_name', $product->product_name) }}" autofocus>
+                            <input type="text" class="form-control @error('product_name') is-invalid @enderror" id="product_name" name="product_name" value="{{ old('product_name', $product->product_name) }}" autofocus>
                             @error('product_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -32,7 +32,7 @@
                     <div class="row mb-3">
                     <label for="company_id" class="col-md-3 col-form-label text-md-end">{{ __('メーカー') }}<span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <select class="form-control" id="company_id" name="company_id">
+                            <select class="form-control @error('company_id') is-invalid @enderror" id="company_id" name="company_id">
                                 @foreach($companies as $company)
                                     <option value="{{ $company->id }}" {{ old('company_id', $product->company_id) == $company->id ? 'selected' : '' }}>
                                         {{ $company->company_name }}
@@ -74,7 +74,7 @@
                     <div class="row mb-3">
                     <label for="comment" class="col-md-3 col-form-label text-md-end">{{ __('コメント') }}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="comment" name="comment" value="{{ old('comment', $product->comment) }}">
+                            <input type="text" class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" value="{{ old('comment', $product->comment) }}">
                             @error('comment')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -86,7 +86,25 @@
                     <div class="row mb-3">
                     <label for="img_path" class="col-md-3 col-form-label text-md-end">{{ __('商品画像') }}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="img_path" name="img_path" value="{{ old('img_path', $product->img_path) }}">
+                            @if($product->img_path)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $product->img_path) }}" 
+                                         alt="{{ $product->product_name }}" 
+                                         class="img-thumbnail" 
+                                         style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="form-text">現在の画像</div>
+                                </div>
+                            @else
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/No Image.png') }}" 
+                                         alt="デフォルト画像" 
+                                         class="img-thumbnail" 
+                                         style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="form-text">画像無し</div>
+                                </div>
+                            @endif
+                            <input type="file" class="form-control @error('img_path') is-invalid @enderror" id="img_path" name="img_path" accept="image/*">
+                            <div class="form-text">新しい画像を選択してください（JPEG、PNG、JPG、GIF形式、2MB以下）</div>
                             @error('img_path')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
