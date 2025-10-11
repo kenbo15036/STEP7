@@ -20,4 +20,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    // 新規登録成功後に商品一覧画面に自動リダイレクト
+    setTimeout(function() {
+        window.location.href = "{{ route('list') }}";
+    }, 3000); // 3秒後にリダイレクト
+</script>
 @endsection
