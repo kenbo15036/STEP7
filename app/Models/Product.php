@@ -79,5 +79,33 @@ class Product extends Model
     public function deleteProduct($id){
         DB::table('products')->where('id', $id)->delete();
     }
+
+    //商品とメーカー情報を結合して取得（一覧用）
+    public function getProductsWithCompany($keyword = null, $companyId = null){
+        $query = DB::table('products')
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->select('products.*', 'companies.company_name');
+        
+        // キーワードが存在する場合は検索条件を追加
+        if ($keyword) {
+            $query->where('products.product_name', 'LIKE', '%' . $keyword . '%');
+        }
+        
+        // メーカーIDが選択されている場合は検索条件を追加
+        if ($companyId) {
+            $query->where('products.company_id', $companyId);
+        }
+        
+        return $query->get();
+    }
+
+    //商品とメーカー情報を結合して取得（詳細用）
+    public function getProductDetailWithCompany($id){
+        return DB::table('products')
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->select('products.*', 'companies.company_name')
+            ->where('products.id', $id)
+            ->first();
+    }
     
 }

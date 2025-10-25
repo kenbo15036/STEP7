@@ -17,21 +17,8 @@ class ProductController extends Controller
         $companyId = $request->input('company_id');
         
         // 商品とメーカー情報を結合して取得
-        $query = DB::table('products')
-            ->join('companies', 'products.company_id', '=', 'companies.id')
-            ->select('products.*', 'companies.company_name');
-        
-        // キーワードが存在する場合は検索条件を追加
-        if ($keyword) {
-            $query->where('products.product_name', 'LIKE', '%' . $keyword . '%');
-        }
-        
-        // メーカーIDが選択されている場合は検索条件を追加
-        if ($companyId) {
-            $query->where('products.company_id', $companyId);
-        }
-        
-        $products = $query->get();
+        $model = new Product();
+        $products = $model->getProductsWithCompany($keyword, $companyId);
         
         // メーカー一覧を取得（プルダウン用）
         $companies = Company::getAllCompanies();
@@ -78,11 +65,8 @@ class ProductController extends Controller
     //商品情報詳細画面の表示
     public function productDetail($id){
         // 商品とメーカー情報を結合して取得
-        $productdetail = DB::table('products')
-            ->join('companies', 'products.company_id', '=', 'companies.id')
-            ->select('products.*', 'companies.company_name')
-            ->where('products.id', $id)
-            ->first();
+        $model = new Product();
+        $productdetail = $model->getProductDetailWithCompany($id);
         
         return view('detail',['productdetail' => $productdetail]);
     }
